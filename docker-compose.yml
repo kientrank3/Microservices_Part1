@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - product-service
+      - order-service
+      - customer-service
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - product-db
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - order-db
+      - product-service
+
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "3003:3003"
+    depends_on:
+      - customer-db
+
+  product-db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - product-data:/data/db
+
+  order-db:
+    image: mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - order-data:/data/db
+
+  customer-db:
+    image: mongo
+    ports:
+      - "27019:27017"
+    volumes:
+      - customer-data:/data/db
+
+volumes:
+  product-data:
+  order-data:
+  customer-data:
